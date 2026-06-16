@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dados Negociação</title>
+<meta name="theme-color" content="#15803d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Ficha Safra">
+<style>
+    :root {
+        --green-800: #14532d;
+        --green-700: #15803d;
+        --green-600: #16a34a;
+        --green-50: #f0fdf4;
+        --gray-900: #111827;
+        --gray-700: #374151;
+        --gray-600: #4b5563;
+        --gray-500: #6b7280;
+        --gray-200: #e5e7eb;
+        --gray-100: #f3f4f6;
+        --white: #ffffff;
+        --radius: 16px;
+        --shadow: 0 4px 20px rgba(0,0,0,.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+        background: linear-gradient(180deg, #f8fafc 0%, #eef4f0 100%);
+        color: var(--gray-900);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+    }
+    header {
+        background: var(--green-700);
+        color: white;
+        padding: 24px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        box-shadow: 0 2px 10px rgba(0,0,0,.1);
+    }
+    .header-inner {
+        max-width: 980px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .logo {
+        width: 40px; height: 40px;
+        background: white;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        color: var(--green-700);
+        font-weight: 800;
+    }
+    h1 { font-size: 20px; font-weight: 700; letter-spacing: .2px; }
+    .subtitle { font-size: 13px; opacity: .9; margin-top: 2px; }
+
+    .container { max-width: 980px; margin: 24px auto; padding: 0 16px 40px; }
+
+    .card {
+        background: var(--white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 22px;
+        margin-bottom: 20px;
+        border: 1px solid #edf0ee;
+    }
+    .card-title {
+        font-size: 17px; font-weight: 700; color: var(--green-800);
+        margin-bottom: 16px;
+        display: flex; align-items: center; gap: 8px;
+    }
+    .card-title::before {
+        content: ""; width: 4px; height: 20px; background: var(--green-600); border-radius: 2px;
+    }
+
+    form .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr;
+    }
+    @media (min-width: 760px) {
+        form .grid { grid-template-columns: 1fr 1fr; }
+        .span-2 { grid-column: span 2; }
+    }
+
+    .field { display: flex; flex-direction: column; }
+    label { font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+    input, select, textarea {
+        width: 100%;
+        padding: 12px 13px;
+        border: 1.5px solid var(--gray-200);
+        border-radius: 10px;
+        font-size: 15px;
+        background: #fff;
+        color: var(--gray-900);
+        transition: all .15s;
+    }
+    textarea { min-height: 84px; resize: vertical; }
+    input:focus, select:focus, textarea:focus {
+        outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+    }
+    input:disabled { background: var(--gray-100); color: var(--gray-600); cursor: not-allowed; }
+    .help { font-size: 12px; color: var(--gray-500); margin-top: 5px; }
+
+    .inline { display: grid; grid-template-columns: 1fr 130px; gap: 8px; }
+    .inline-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px dashed var(--gray-200);
+    }
+    @media (min-width: 640px) {
+        .actions { grid-template-columns: repeat(4, auto); justify-content: start; }
+    }
+    .btn {
+        padding: 12px 18px;
+        border-radius: 10px;
+        border: 1.5px solid transparent;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all .15s;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        white-space: nowrap;
+    }
+    .btn-primary { background: var(--green-600); color: white; }
+    .btn-primary:hover { background: var(--green-700); transform: translateY(-1px); }
+    .btn-secondary { background: var(--gray-100); color: var(--gray-700); border-color: var(--gray-200); }
+    .btn-secondary:hover { background: #e9ecef; }
+    .btn-ghost { background: white; color: var(--gray-700); border-color: var(--gray-200); }
+    .btn-ghost:hover { background: var(--green-50); border-color: var(--green-600); color: var(--green-700); }
+
+    .checklist-wrap { overflow-x: auto; margin: 0 -6px; padding: 0 6px; }
+    table { width: 100%; border-collapse: collapse; min-width: 640px; }
+    th {
+        text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+        color: var(--gray-500); background: #f9fafb; padding: 10px 12px; border-bottom: 1px solid var(--gray-200);
+        font-weight: 700;
+    }
+    td { padding: 14px 12px; border-bottom: 1px solid #f1f3f2; font-size: 14px; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    td.campo { font-weight: 600; color: var(--green-800); width: 140px; }
+    td.acao { color: var(--gray-700); }
+    td.status { text-align: center; width: 90px; }
+    .chk {
+        width: 20px; height: 20px; accent-color: var(--green-600); cursor: pointer;
+    }
+
+    .hidden { display: none !important; }
+
+    footer {
+        text-align: center; padding: 28px 16px; color: var(--gray-500); font-size: 13px;
+    }
+    .tag { display: inline-block; background: var(--green-50); color: var(--green-700); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-left: 8px; }
+
+    .toast {
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: var(--gray-900); color: white; padding: 10px 16px; border-radius: 10px;
+        font-size: 14px; opacity: 0; pointer-events: none; transition: .3s; z-index: 100;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+
+    @media print {
+        body { background: white; }
+        header, .actions, .help, footer, .btn { display: none !important; }
+        .container { margin: 0; padding: 0; max-width: 100%; }
+        .card { box-shadow: none; border: none; padding: 0; margin: 0 0 20px; page-break-inside: avoid; }
+        .card-title::before { display: none; }
+        table { min-width: 100%; }
+        input, select, textarea { border: 1px solid #ccc !important; }
+        #checklistSection { display: block !important; }
+    }
+</style>
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <div class="logo">Masutti</div>
+        <div>
+            <h1>Dados Negociação</h1>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="card">
+        <div class="card-title">Dados da Negociação</div>
+        <form id="fichaForm" autocomplete="off">
+            <div class="grid">
+                <div class="field">
+                    <label for="vendedor">Vendedor</label>
+                    <select id="vendedor">
+                        <option value="">Selecione</option>
+                        <option>Faz Saudades</option>
+                        <option>Faz JK</option>
+                        <option>Faz Jaqueline</option>
+                        <option>Brasil Fronteira</option>
+                        <option>Arm Cerejeiras</option>
+                        <option>Arm Candeias</option>
+                        <option>Ciagram</option>
+
+                    </select>
+                    <div class="help">Responsável pela negociação</div>
+                </div>
+                <div class="field">
+                    <label for="comprador">Comprador</label>
+                    <input type="text" id="comprador" placeholder="Razão social / Nome">
+                    <div class="help">Nome completo ou empresa compradora</div>
+                </div>
+
+                <div class="field">
+                    <label for="safra">Safra</label>
+                    <select id="safra">
+                        <option value="">Selecione</option>
+                        <option>24/25</option>
+                        <option>25/26</option>
+                        <option>26/27</option>
+                    </select>
+                    <div class="help">Ex: 2025/26</div>
+                </div>
+                <div class="field">
+                    <label for="produto">Produto</label>
+                    <select id="produto">
+                        <option value="">Selecione</option>
+                        <option>Soja</option>
+                        <option>Milho</option>
+                        <option>Caroco de Algodão</option>
+                        <option>Fibrilha</option>
+                        <option>Semente de Soja</option>
+                        <option>Residuo de Soja</option>
+                        <option>Resiudo de Milho</option>
+
+                    </select>
+                    <div class="help">Grão ou fibra negociada</div>
+                </div>
+
+                <div class="field">
+                    <label for="qtde">Qtde</label>
+                    <div class="inline">
+                        <input type="number" id="qtde" min="0" step="0.01" placeholder="0">
+                        <select id="unidade">
+                            <option value="sacas">sacas</option>
+                            <option value="toneladas">toneladas</option>
+                            <option value="Bag 5MM">Bag 5MM</option>
+                        </select>
+                    </div>
+                    <div class="help">Volume total negociado</div>
+                </div>
+                <div class="field">
+                    <label for="valor">Valor Líquido Unitário (R$)</label>
+                    <input type="number" id="valor" min="0" step="0.01" placeholder="0,00">
+                    <div class="help">Valor por saca ou tonelada</div>
+                </div>
+                
+                <div class="field">
+                    <label for="valorTotal">Valor Com ICMS</label>
+                    <input type="text" id="valorTotal" placeholder="R$ 0,00" disabled>
+                    <div class="help">Cálculo automático: (Qtde × Valor Unitário) + ICMS correspondente</div>
+                </div>
+
+                <div class="field">
+                    <label for="icms">Possui ICMS?</label>
+                    <select id="icms">
+                        <option value="NAO">NÃO</option>
+                        <option value="SIM">SIM</option>
+                    </select>
+                    <div class="help">Informe se há incidência de imposto</div>
+                </div>
+                <div class="field hidden" id="fieldAliquota">
+                    <label for="aliquota">Alíquota ICMS</label>
+                    <select id="aliquota">
+                        <option value="">Selecione a alíquota</option>
+                        <option value="4.8">4,8%</option>
+                        <option value="12">12%</option>
+                    </select>
+                    <div class="help">Percentual aplicado</div>
+                </div>
+
+                <div class="field span-2">
+                    <label for="obsPgto">Obs pgto</label>
+                    <textarea id="obsPgto" placeholder="Ex: 30 dias após entrega"></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="local">Local de Retirada</label>
+                    <input type="text" id="local" placeholder="Fazenda, armazém, cidade-UF">
+                </div>
+                <div class="field">
+                    <label>Prazo retirada</label>
+                    <div class="inline-2">
+                        <input type="date" id="prazoIni">
+                        <input type="date" id="prazoFim">
+                    </div>
+                </div>
+
+                <div class="field span-2">
+                    <label for="obs">Obs</label>
+                    <textarea id="obs" placeholder="Qualidade, frete, impostos..."></textarea>
+                </div>
+            </div>
+        </form>
+
+        <div class="actions">
+            <button class="btn btn-primary" id="btnGerar">Gerar Checklist</button>
+            <button class="btn btn-ghost" id="btnPdf">Exportar PDF</button>
+            <button class="btn btn-secondary" id="btnWhats">Copiar WhatsApp</button>
+            <button class="btn btn-secondary" id="btnLimpar">Limpar</button>
+        </div>
+    </div>
+
+    <section id="checklistSection" class="card hidden">
+        <div class="card-title">Checklist de Ações <span class="tag" id="tagStatus">Pendente</span></div>
+        <div class="checklist-wrap">
+            <table id="checklistTable">
+                <thead><tr><th>Campo</th><th>Ação</th><th class="status">Status</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer>Vilhena-RO | <span id="dataAtual"></span></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fields = ['vendedor','comprador','safra','produto','qtde','unidade','valor','icms','aliquota','obsPgto','obs','local','prazoIni','prazoFim'];
+const STORAGE_KEY = 'fichaSafra_v2';
+
+function showToast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+
+function save(){
+    const d={};
+    fields.forEach(f=>d[f]=$(f).value);
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(d));
+}
+
+function load(){
+    const r=localStorage.getItem(STORAGE_KEY);
+    if(r){
+        const d=JSON.parse(r);
+        fields.forEach(f=>{if(d[f])$(f).value=d[f]});
+        toggleAliquota();
+    }
+}
+
+function fmt(n){return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2})}
+
+// Helper para formatar a data americana (AAAA-MM-DD) para brasileira (DD/MM/AAAA)
+function formatarDataBR(dataStr) {
+    if(!dataStr) return '-';
+    const partes = dataStr.split('-');
+    if(partes.length !== 3) return dataStr;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+function calcularTotais() {
+    const qtde = parseFloat($('qtde').value) || 0;
+    const valorUnitario = parseFloat($('valor').value) || 0;
+    
+    let totalLiquido =  valorUnitario;
+    let totalBruto = totalLiquido;
+    
+    if ($('icms').value === 'SIM') {
+        const aliquotaPct = parseFloat($('aliquota').value) || 0;
+        if (aliquotaPct > 0) {
+            totalBruto =  (totalLiquido / (1-(aliquotaPct / 100)));
+        }
+    }
+    
+    $('valorTotal').value = totalBruto > 0 ? 'R$ ' + fmt(totalBruto) : 'R$ 0,00';
+    return { liquido: totalLiquido, bruto: totalBruto };
+}
+
+function toggleAliquota() {
+    if ($('icms').value === 'SIM') {
+        $('fieldAliquota').classList.remove('hidden');
+    } else {
+        $('aliquota').value = ''; 
+        $('fieldAliquota').classList.add('hidden');
+    }
+    calcularTotais();
+}
+
+function gerar(){
+    save();
+    const d={};
+    fields.forEach(f=>d[f]=$(f).value);
+    const tb=$('checklistTable').querySelector('tbody');
+    tb.innerHTML='';
+    
+    const totais = calcularTotais();
+    const textoAliquota = d.aliquota ? d.aliquota + '%' : '0%';
+    const textoIcms = d.icms === 'SIM' ? `Sim (${textoAliquota})` : 'Não retido';
+
+    const itens=[
+        {c:'Cadastro',a:`Confirmar comprador: ${d.comprador||'-'}`},
+        {c:'Contrato',a:`Minuta ${d.produto||''} safra ${d.safra||''} - ${d.qtde} ${d.unidade}`},
+        {c:'Preço Unitário',a:`R$ ${fmt(d.valor||0)} líquido`},
+        {c:'Imposto',a:`ICMS: ${textoIcms}`},
+        {c:'Financeiro',a:`Valor Unitário com ICMS: R$ ${fmt(totais.bruto)}`},
+        {c:'Pagamento',a:d.obsPgto||'-'},
+        {c:'Logística',a:d.local||'-'},
+        {c:'Prazo',a:`${formatarDataBR(d.prazoIni)} a ${formatarDataBR(d.prazoFim)}`},
+    ];
+    itens.forEach((it,i)=>{
+        tb.innerHTML+=`<tr><td class="campo">${it.c}</td><td class="acao">${it.a}</td><td class="status"><input type="checkbox" class="chk"></td></tr>`
+    });
+    $('checklistSection').classList.remove('hidden');
+    showToast('Checklist gerado');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+    load();
+    $('dataAtual').textContent=new Date().toLocaleDateString('pt-BR');
+    
+    document.getElementById('fichaForm').addEventListener('input', () => {
+        calcularTotais();
+        save();
+    });
+    
+    $('icms').onchange = () => {
+        toggleAliquota();
+        save();
+    };
+    
+    $('aliquota').onchange = () => {
+        calcularTotais();
+        save();
+    };
+
+    $('btnGerar').onclick=gerar;
+    $('btnPdf').onclick=()=>window.print();
+    
+    // ==========================================
+    // SEÇÃO DO WHATSAPP COM TODOS OS CAMPOS
+    // ==========================================
+    $('btnWhats').onclick=()=>{
+        const d={};
+        fields.forEach(f=>d[f]=$(f).value);
+        
+        const totais = calcularTotais();
+        const infoIcms = d.icms === 'SIM' ? `SIM (${d.aliquota}%)` : `NÃO`;
+        
+        // Formatação das datas de retirada
+        const periodoRetirada = (d.prazoIni || d.prazoFim) 
+            ? `${formatarDataBR(d.prazoIni)} até ${formatarDataBR(d.prazoFim)}` 
+            : '-';
+
+        // Montagem do texto com todos os campos incluídos
+        const txt=
+                  `DADOS NEGOCIAÇÃO \n\n` +
+                  `Vendedor: ${d.vendedor || '-'}\n` +
+                  `Comprador: ${d.comprador || '-'}\n` +
+                  `Safra: ${d.safra || '-'}\n` +
+                  `Produto: ${d.produto || '-'}\n` +
+                  `Quantidade: ${d.qtde || '0'} ${d.unidade}\n` +
+                  `Preço Líquido Unitário: R$ ${fmt(d.valor || 0)}\n` + 
+                  `Possui ICMS: ${infoIcms}\n` +
+                  `PREÇO UNITÁRIO COM ICMS: R$ ${fmt(totais.bruto)}/un\n` +
+                  `Obs. Pagamento: ${d.obsPgto || '-'}\n` +
+                  `Local de Retirada: ${d.local || '-'}\n` +
+                  `Prazo de Retirada: ${periodoRetirada}\n` +
+                  `Observações Gerais: ${d.obs || '-'}`;
+                  
+        navigator.clipboard.writeText(txt);
+        showToast('Ficha completa copiada!');
+    };
+    
+    $('btnLimpar').onclick=()=>{localStorage.clear();location.reload()}
+})
+</script>
+</body>
+</html>
