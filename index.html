@@ -263,6 +263,11 @@
                     <input type="number" id="valor" min="0" step="0.01" placeholder="0,00">
                     <div class="help">Valor por saca ou tonelada</div>
                 </div>
+                                <div class="field ">
+                    <label for="valorTotal">Valor Com ICMS</label>
+                    <input type="text" id="valorTotal" placeholder="R$ 0,00" disabled>
+                    <div class="help">Cálculo automático: (Qtde × Valor Unitário) + ICMS correspondente</div>
+                </div>
                 <div class="field">
                     <label for="icms">Possui ICMS?</label>
                     <select id="icms">
@@ -272,11 +277,7 @@
                     <div class="help">Informe se há incidência de imposto</div>
                 </div>
                 
-                <div class="field ">
-                    <label for="valorTotal">Valor Com ICMS</label>
-                    <input type="text" id="valorTotal" placeholder="R$ 0,00" disabled>
-                    <div class="help">Cálculo automático: (Qtde × Valor Unitário) + ICMS correspondente</div>
-                </div>
+
 
                 <div class="field hidden" id="fieldAliquota">
                     <label for="aliquota">Alíquota ICMS</label>
