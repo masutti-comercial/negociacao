@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dados Negociação </title>
+<title>Dados Negociação</title>
 <meta name="theme-color" content="#15803d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -109,7 +109,9 @@
     input:disabled { background: var(--gray-100); color: var(--gray-600); cursor: not-allowed; }
     .help { font-size: 12px; color: var(--gray-500); margin-top: 5px; }
 
+    /* Classes auxiliares para colocar campos lado a lado em linha */
     .inline { display: grid; grid-template-columns: 1fr 130px; gap: 8px; }
+    .inline-comprador { display: grid; grid-template-columns: 1fr 90px; gap: 8px; }
     .inline-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .actions {
@@ -121,7 +123,7 @@
         border-top: 1px dashed var(--gray-200);
     }
     @media (min-width: 640px) {
-        .actions { grid-template-columns: repeat(5, auto); justify-content: start; }
+        .actions { grid-template-columns: repeat(3, auto); justify-content: start; }
     }
     .btn {
         padding: 12px 18px;
@@ -134,35 +136,14 @@
         display: inline-flex; align-items: center; justify-content: center; gap: 8px;
         white-space: nowrap;
     }
-    .btn-primary { background: var(--green-600); color: white; }
-    .btn-primary:hover { background: var(--green-700); transform: translateY(-1px); }
     .btn-secondary { background: var(--gray-100); color: var(--gray-700); border-color: var(--gray-200); }
     .btn-secondary:hover { background: #e9ecef; }
-    .btn-ghost { background: white; color: var(--gray-700); border-color: var(--gray-200); }
-    .btn-ghost:hover { background: var(--green-50); border-color: var(--green-600); color: var(--green-700); }
-
-    .checklist-wrap { overflow-x: auto; margin: 0 -6px; padding: 0 6px; }
-    table { width: 100%; border-collapse: collapse; min-width: 640px; }
-    th {
-        text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
-        color: var(--gray-500); background: #f9fafb; padding: 10px 12px; border-bottom: 1px solid var(--gray-200);
-        font-weight: 700;
-    }
-    td { padding: 14px 12px; border-bottom: 1px solid #f1f3f2; font-size: 14px; vertical-align: top; }
-    tr:last-child td { border-bottom: none; }
-    td.campo { font-weight: 600; color: var(--green-800); width: 140px; }
-    td.acao { color: var(--gray-700); }
-    td.status { text-align: center; width: 90px; }
-    .chk {
-        width: 20px; height: 20px; accent-color: var(--green-600); cursor: pointer;
-    }
 
     .hidden { display: none !important; }
 
     footer {
         text-align: center; padding: 28px 16px; color: var(--gray-500); font-size: 13px;
     }
-    .tag { display: inline-block; background: var(--green-50); color: var(--green-700); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-left: 8px; }
 
     .toast {
         position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -170,26 +151,15 @@
         font-size: 14px; opacity: 0; pointer-events: none; transition: .3s; z-index: 100;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(-6px); }
-
-    @media print {
-        body { background: white; }
-        header, .actions, .help, footer, .btn { display: none !important; }
-        .container { margin: 0; padding: 0; max-width: 100%; }
-        .card { box-shadow: none; border: none; padding: 0; margin: 0 0 20px; page-break-inside: avoid; }
-        .card-title::before { display: none; }
-        table { min-width: 100%; }
-        input, select, textarea { border: 1px solid #ccc !important; }
-        #checklistSection { display: block !important; }
-    }
 </style>
 </head>
 <body>
 <header>
     <div class="header-inner">
-        <div class="logo">MASUTTI</div>
+        <div class="logo">Masutti</div>
         <div>
             <h1>Dados Negociação</h1>
-        </div>
+         
     </div>
 </header>
 
@@ -213,10 +183,24 @@
                     </select>
                     <div class="help">Responsável pela negociação</div>
                 </div>
+                
                 <div class="field">
-                    <label for="comprador">Comprador</label>
-                    <input type="text" id="comprador" placeholder="Razão social / Nome">
-                    <div class="help">Nome completo ou empresa compradora</div>
+                    <label for="comprador">Comprador / UF</label>
+                    <div class="inline-comprador">
+                        <input type="text" id="comprador" placeholder="Razão social / Nome">
+                        <select id="ufComprador">
+                            <option value="">UF</option>
+                            <option value="RO">RO</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="PR">PR</option>
+                            <option value="SP">SP</option>
+                            <option value="GO">GO</option>
+                            <option value="MG">MG</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="help">Nome e Estado de destino</div>
                 </div>
 
                 <div class="field">
@@ -233,13 +217,15 @@
                     <label for="produto">Produto</label>
                     <select id="produto">
                         <option value="">Selecione</option>
-                        <option>Soja</option>
-                        <option>Milho</option>
-                        <option>Caroco de Algodão</option>
+                        <option>Soja em Grãos</option>
+                        <option>Milho em Grãos</option>
+                        <option>Caroço de Algodão</option>
                         <option>Fibrilha</option>
                         <option>Semente de Soja</option>
                         <option>Residuo de Soja</option>
                         <option>Resiudo de Milho</option>
+                        <option>Casquinha de Algodão</option>
+
 
                        <option> Semente de Soja</option>
                     </select>
@@ -251,23 +237,32 @@
                     <div class="inline">
                         <input type="number" id="qtde" min="0" step="0.01" placeholder="0">
                         <select id="unidade">
-                            <option value="sacas">Sacas</option>
-                            <option value="Toneladas">Ton</option>
+                            <option value="sacas">sacas</option>
+                            <option value="toneladas">Ton</option>
                             <option value="Bag 5MM">Bag 5MM</option>
                         </select>
                     </div>
                     <div class="help">Volume total negociado</div>
                 </div>
+                
                 <div class="field">
                     <label for="valor">Valor Unitário (R$)</label>
-                    <input type="number" id="valor" min="0" step="0.01" placeholder="0,00">
-                    <div class="help">Valor por saca ou tonelada</div>
+                    <div class="inline">
+                        <input type="number" id="valor" min="0" step="0.01" placeholder="0,00">
+                        <select id="unidadePreco">
+                            <option value="saca">por saca</option>
+                            <option value="tonelada">por ton</option>
+                        </select>
+                    </div>
+                    <div class="help">Valor e referencial de venda</div>
                 </div>
-                                <div class="field ">
+                
+                <div class="field span-2">
                     <label for="valorTotal">Valor Com ICMS</label>
                     <input type="text" id="valorTotal" placeholder="R$ 0,00" disabled>
-                    <div class="help">Cálculo automático: (Qtde × Valor Unitário) + ICMS correspondente</div>
+                    <div class="help">Cálculo automático: baseado no valor unitário e ICMS correspondente</div>
                 </div>
+
                 <div class="field">
                     <label for="icms">Possui ICMS?</label>
                     <select id="icms">
@@ -276,9 +271,6 @@
                     </select>
                     <div class="help">Informe se há incidência de imposto</div>
                 </div>
-                
-
-
                 <div class="field hidden" id="fieldAliquota">
                     <label for="aliquota">Alíquota ICMS</label>
                     <select id="aliquota">
@@ -314,24 +306,11 @@
         </form>
 
         <div class="actions">
-            <button class="btn btn-primary" id="btnGerar">Gerar Checklist</button>
-            <button class="btn btn-ghost" id="btnPdf">Exportar PDF</button>
-            <button class="btn btn-secondary" id="btnWhats">Copiar WhatsApp</button>
-            <!-- Inclusão do botão de envio de e-mail -->
+            <button class="btn btn-secondary" id="btnWhats" style="background: #16a34a; color: white;">Copiar WhatsApp</button>
             <button class="btn btn-secondary" id="btnEmail" style="background: #ea580c; color: white;">Enviar por E-mail</button>
             <button class="btn btn-secondary" id="btnLimpar">Limpar</button>
         </div>
     </div>
-
-    <section id="checklistSection" class="card hidden">
-        <div class="card-title">Checklist de Ações <span class="tag" id="tagStatus">Pendente</span></div>
-        <div class="checklist-wrap">
-            <table id="checklistTable">
-                <thead><tr><th>Campo</th><th>Ação</th><th class="status">Status</th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </section>
 </main>
 
 <footer>Vilhena-RO | <span id="dataAtual"></span></footer>
@@ -339,7 +318,8 @@
 
 <script>
 const $ = id => document.getElementById(id);
-const fields = ['vendedor','comprador','safra','produto','qtde','unidade','valor','icms','aliquota','obsPgto','obs','local','prazoIni','prazoFim'];
+// Atualizado a lista de campos para incluir os 2 novos IDs
+const fields = ['vendedor','comprador','ufComprador','safra','produto','qtde','unidade','valor','unidadePreco','icms','aliquota','obsPgto','obs','local','prazoIni','prazoFim'];
 const STORAGE_KEY = 'fichaSafra_v2';
 
 function showToast(m){const t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
@@ -361,7 +341,6 @@ function load(){
 
 function fmt(n){return Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2})}
 
-// Converte a formatação da data nativa HTML (AAAA-MM-DD) para o padrão brasileiro (DD/MM/AAAA)
 function formatarDataBR(dataStr) {
     if(!dataStr) return '-';
     const partes = dataStr.split('-');
@@ -373,13 +352,13 @@ function calcularTotais() {
     const qtde = parseFloat($('qtde').value) || 0;
     const valorUnitario = parseFloat($('valor').value) || 0;
     
-    let totalLiquido =  valorUnitario;
+    let totalLiquido = valorUnitario;
     let totalBruto = totalLiquido;
     
     if ($('icms').value === 'SIM') {
         const aliquotaPct = parseFloat($('aliquota').value) || 0;
         if (aliquotaPct > 0) {
-            totalBruto =  (totalLiquido / (1-(aliquotaPct / 100)));
+            totalBruto = (totalLiquido / (1-(aliquotaPct / 100)));
         }
     }
     
@@ -397,35 +376,7 @@ function toggleAliquota() {
     calcularTotais();
 }
 
-function gerar(){
-    save();
-    const d={};
-    fields.forEach(f=>d[f]=$(f).value);
-    const tb=$('checklistTable').querySelector('tbody');
-    tb.innerHTML='';
-    
-    const totais = calcularTotais();
-    const textoAliquota = d.aliquota ? d.aliquota + '%' : '0%';
-    const textoIcms = d.icms === 'SIM' ? `Sim (${textoAliquota})` : 'Não retido';
-
-    const itens=[
-        {c:'Cadastro',a:`Confirmar comprador: ${d.comprador||'-'}`},
-        {c:'Contrato',a:`Minuta ${d.produto||''} safra ${d.safra||''} - ${d.qtde} ${d.unidade}`},
-        {c:'Preço Unitário',a:`R$ ${fmt(d.valor||0)} líquido`},
-        {c:'Imposto',a:`ICMS: ${textoIcms}`},
-        {c:'Financeiro',a:`Valor Unitário com ICMS: R$ ${fmt(totais.bruto)}`},
-        {c:'Pagamento',a:d.obsPgto||'-'},
-        {c:'Logística',a:d.local||'-'},
-        {c:'Prazo',a:`${formatarDataBR(d.prazoIni)} a ${formatarDataBR(d.prazoFim)}`},
-    ];
-    itens.forEach((it,i)=>{
-        tb.innerHTML+=`<tr><td class="campo">${it.c}</td><td class="acao">${it.a}</td><td class="status"><input type="checkbox" class="chk"></td></tr>`
-    });
-    $('checklistSection').classList.remove('hidden');
-    showToast('Checklist gerado');
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',() => {
     load();
     $('dataAtual').textContent=new Date().toLocaleDateString('pt-BR');
     
@@ -443,9 +394,6 @@ document.addEventListener('DOMContentLoaded',()=>{
         calcularTotais();
         save();
     };
-
-    $('btnGerar').onclick=gerar;
-    $('btnPdf').onclick=()=>window.print();
     
     // Rotina de cópia estruturada para WhatsApp
     $('btnWhats').onclick=()=>{
@@ -454,29 +402,31 @@ document.addEventListener('DOMContentLoaded',()=>{
         
         const totais = calcularTotais();
         const infoIcms = d.icms === 'SIM' ? `SIM (${d.aliquota}%)` : `NÃO`;
-        const periodoRetirada = (d.prazoIni || d.prazoFim) ? `${formatarDataBR(d.prazoIni)} ate ${formatarDataBR(d.prazoFim)}` : '-';
+        const periodoRetirada = (d.prazoIni || d.prazoFim) ? `${formatarDataBR(d.prazoIni)} até ${formatarDataBR(d.prazoFim)}` : '-';
+        
+        // Formatação do comprador com UF
+        const sufixoUf = d.ufComprador ? ` (${d.ufComprador})` : '';
+        const compradorFormatado = (d.comprador || '-') + sufixoUf;
 
-        const txt=`*DADOS NEGOCIAÇÃO*\n\n` +
+        const txt=`DADOS NEGOCIAÇÃO\n\n` +
                   `Vendedor: ${d.vendedor || '-'}\n` +
-                  `Comprador: ${d.comprador || '-'}\n` +
+                  `Comprador: ${compradorFormatado}\n` +
                   `Safra: ${d.safra || '-'}\n` +
                   `Produto: ${d.produto || '-'}\n` +
                   `Quantidade: ${d.qtde || '0'} ${d.unidade}\n` +
-                  `Preço Unitário: R$ ${fmt(d.valor || 0)}\n` + 
+                  `Preço Unitário: R$ ${fmt(d.valor || 0)} por ${d.unidadePreco || 'saca'}\n` + 
                   `Possui ICMS: ${infoIcms}\n` +
-                  `Preço com ICMS: R$ ${fmt(totais.bruto)}/un\n\n` +
+                  `Preço com ICMS: R$ ${fmt(totais.bruto)} por ${d.unidadePreco || 'saca'}\n` +
                   `Obs. Pagamento: ${d.obsPgto || '-'}\n` +
                   `Local de Retirada: ${d.local || '-'}\n` +
-                  `Prazo de Retirada: ${periodoRetirada}\n\n` +
+                  `Prazo de Retirada: ${periodoRetirada}\n` +
                   `Observações Gerais: ${d.obs || '-'}`;
                   
         navigator.clipboard.writeText(txt);
         showToast('Ficha completa copiada!');
     };
     
-    // ==========================================
-    // IMPLEMENTAÇÃO DA ABORDAGEM 1: DISPARO DE E-MAIL
-    // ==========================================
+    // Rotina de disparo de e-mail nativo
     $('btnEmail').onclick = () => {
         const d = {};
         fields.forEach(f => d[f] = $(f).value);
@@ -484,27 +434,27 @@ document.addEventListener('DOMContentLoaded',()=>{
         const totais = calcularTotais();
         const infoIcms = d.icms === 'SIM' ? `SIM (${d.aliquota}%)` : `NAO`;
         const periodoRetirada = (d.prazoIni || d.prazoFim) ? `${formatarDataBR(d.prazoIni)} ate ${formatarDataBR(d.prazoFim)}` : '-';
-
-        // Variáveis de controle do envio
-        const emailDestino = ""; // Deixe vazio para preencher no iPhone ou coloque um fixo (ex: "comercial@empresa.com")
-        const assunto = `Ficha de Negociacao - ${d.comprador || 'Novo Negocio'}`;
         
-        // Estruturação do texto usando o caractere especial de escape de linha (%0D%0A)
+        const sufixoUf = d.ufComprador ? ` (${d.ufComprador})` : '';
+        const compradorFormatado = (d.comprador || '-') + sufixoUf;
+
+        const emailDestino = "comercial@masutti.com.br"; 
+        const assunto = `Negociação - ${d.comprador || 'Novo Negocio'} - ${d.produto || 'Novo Negocio'} - ${d.safra || 'Novo Negocio'}`;
+        
         const corpoEmail = `DADOS NEGOCIACAO %0D%0A%0D%0A` +
                            `Vendedor: ${d.vendedor || '-'}%0D%0A` +
-                           `Comprador: ${d.comprador || '-'}%0D%0A` +
+                           `Comprador: ${compradorFormatado}%0D%0A` +
                            `Safra: ${d.safra || '-'}%0D%0A` +
                            `Produto: ${d.produto || '-'} %0D%0A` +
-                           `Quantidade: ${d.qtde || '0'} ${d.unidade}%0D%0A` +
-                           `Preco Liquido Unitario: R$ ${fmt(d.valor || 0)}%0D%0A` + 
+                           `Quantidade:(${d.qtde || '0'} ${d.unidade})%0D%0A` +
+                           `Preco Unitario: R$ ${fmt(d.valor || 0)} por ${d.unidadePreco || 'saca'}%0D%0A` + 
                            `Possui ICMS: ${infoIcms}%0D%0A` +
-                           `PRECO UNITARIO COM ICMS: R$ ${fmt(totais.bruto)}/un%0D%0A%0D%0A` +
+                           `Preço com ICMS: R$ ${fmt(totais.bruto)} por ${d.unidadePreco || 'saca'}%0D%0A` +
                            `Obs. Pagamento: ${d.obsPgto || '-'}%0D%0A` +
                            `Local de Retirada: ${d.local || '-'}%0D%0A` +
-                           `Prazo de Retirada: ${periodoRetirada}%0D%0A%0D%0A` +
-                           `Observacoes Gerais: ${d.obs || '-'}`;
+                           `Prazo de Retirada: ${periodoRetirada}%0D%0A` +
+                           `Observações Gerais: ${d.obs || '-'}`;
 
-        // Redirecionamento do navegador para invocar o aplicativo de e-mail do sistema
         window.location.href = `mailto:${emailDestino}?subject=${encodeURIComponent(assunto)}&body=${corpoEmail}`;
         showToast('Abrindo aplicativo de e-mail...');
     };
