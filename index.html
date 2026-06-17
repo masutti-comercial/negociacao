@@ -421,7 +421,8 @@ document.addEventListener('DOMContentLoaded',() => {
                   `Obs. Pagamento: ${d.obsPgto || '-'}\n` +
                   `Local de Retirada: ${d.local || '-'}\n` +
                   `Prazo de Retirada: ${periodoRetirada}\n` +
-                  `Observações Gerais: ${d.obs || '-'}`;
+                  `Observações Gerais: ${d.obs || '-'}\n` +
+                  `_Vilhena-RO, ${new Date().toLocaleDateString('pt-BR')}` ;
                   
         navigator.clipboard.writeText(txt);
         showToast('Ficha completa copiada!');
@@ -454,7 +455,9 @@ document.addEventListener('DOMContentLoaded',() => {
                            `Obs. Pagamento: ${d.obsPgto || '-'}%0D%0A` +
                            `Local de Retirada: ${d.local || '-'}%0D%0A` +
                            `Prazo de Retirada: ${periodoRetirada}%0D%0A` +
-                           `Observações Gerais: ${d.obs || '-'}`;
+   
+                           `Observações Gerais: ${d.obs || '-'}%0D%0A` +
+                           `_Vilhena-RO, ${new Date().toLocaleDateString('pt-BR')}` ;
 
         window.location.href = `mailto:${emailDestino}?subject=${encodeURIComponent(assunto)}&body=${corpoEmail}`;
         showToast('Abrindo aplicativo de e-mail...');
